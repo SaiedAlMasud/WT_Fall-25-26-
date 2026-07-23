@@ -101,6 +101,7 @@ body{
     color: black;
     opacity: 0.8;
 }
+
 .appoinments{
     display:flex;
     flex-direction: column;
@@ -235,4 +236,11 @@ body{
     width: 80%;
     text-align: center;
     margin: 10px auto;
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        width: 90%;
+    }
+
 }

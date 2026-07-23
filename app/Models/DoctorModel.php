@@ -36,6 +36,16 @@ class DoctorModel {
         return $doctors;
     }
 
+    public function getDoctorById($doctor_id) {
+        $stmt = $this->conn->prepare("SELECT * FROM doctor WHERE user_id = ?");
+        $stmt->bind_param("i", $doctor_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $doctor = $result->num_rows === 1 ? $result->fetch_assoc() : null;
+        $stmt->close();
+        return $doctor;
+    }
+
     public function create($name, $dob, $gender, $bloodgroup, $weight, $address, $profile_image_path) {
         $sql = "INSERT INTO doctor (user_name, dob, gender, blood_group, weight, address, photo) VALUES ('$name', '$dob', '$gender', '$bloodgroup', '$weight', '$address', '$profile_image_path')";
         return $this->conn->query($sql);

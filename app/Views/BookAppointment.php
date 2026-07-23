@@ -74,6 +74,7 @@
                         <p class="doctor-specialty">Specialization: <?php echo htmlspecialchars($doctor['specilization']); ?></p>
                         <p class="doctor-availability">Available: <?php echo htmlspecialchars($doctor['availability_day']); ?></p>
                         <p><?php echo htmlspecialchars($doctor['availability_time_start']); ?> to <?php echo htmlspecialchars($doctor['availability_time_end']); ?></p>
+                        <button class="view-profile-btn" onclick="loadDoctorProfile('<?php echo $doctor['user_id'] ?? ''; ?>')">View Profile</button>
                         <button class="book-appointment-btn" onclick="OpenModal('<?php echo $doctor['user_name']; ?>',
                             '<?php echo $doctor['specilization']; ?>',
                             '<?php echo $doctor['user_id'] ?? ''; ?>')">Book Appointment</button>
@@ -129,7 +130,45 @@
         </div>
     </dialog>
 
+    <dialog id="doctorProfileModal" class="modal">
+        <div class="modal-content doctor-profile-modal-content">
+            <span class="close" onclick="closeDoctorProfileModal()">&times;</span>
+            <h2>Doctor Profile</h2>
+            <div id="doctorProfileDetails"></div>
+        </div>
+    </dialog>
+
     <script src="../assets/js/hamburgerMenu.js"></script>
     <script src="../assets/js/getBookingModal.js"></script>
+    <script>
+        var doctorProfileModal = document.getElementById('doctorProfileModal');
+
+        function loadDoctorProfile(doctorId) {
+            doctorProfileModal.style.display = 'flex';
+            document.getElementById('doctorProfileDetails').innerHTML = '<p class="doctor-profile-loading">Loading profile...</p>';
+
+            var doctorProfile = new XMLHttpRequest();
+            doctorProfile.open('GET', 'GetDoctorProfile.php?doctor_id=' + doctorId, true);
+            doctorProfile.onload = function () {
+                if (doctorProfile.status === 200) {
+                    document.getElementById('doctorProfileDetails').innerHTML = doctorProfile.responseText;
+                } else {
+                    document.getElementById('doctorProfileDetails').innerHTML = '<p class="doctor-profile-error">Error loading doctor profile. Please try again.</p>';
+                }
+            };
+            doctorProfile.send();
+        }
+
+        function closeDoctorProfileModal() {
+            doctorProfileModal.style.display = 'none';
+            document.getElementById('doctorProfileDetails').innerHTML = '';
+        }
+
+        window.addEventListener('click', function(event) {
+            if (event.target == doctorProfileModal) {
+                closeDoctorProfileModal();
+            }
+        });
+    </script>
 </body>
 </html>
